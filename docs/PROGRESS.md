@@ -103,8 +103,12 @@
 | Embedding backfill Lambda | ✅ Done | Wired in Phase 3, uses real EmbedderFactory |
 | Atlas Search + Vector Search index creation scripts | ✅ Done | scripts/atlas/ |
 | review-summary ingestion Lambda | ✅ Done | Replaced stub with real ReviewSummaryChain |
+| Seed data system | ✅ Done | scripts/seed/ — 10 categories, 50 products, 100 users, 200 orders, 200 reviews, 20 coupons |
+| Standalone backfill CLI script | ✅ Done | scripts/backfill/backfill-embeddings.ts — --reset flag, progress output |
+| Unit tests for packages/ai | ✅ Done | 18 tests: embedder batching, cache hit/miss, RAG chain, recommendation chain |
+| Bug fix: semanticSearch numCandidates | ✅ Done | ai.resolver.ts: Math.max(limit*10, 100) instead of 0.65 |
 
-**Verification**: `pnpm turbo run build` — all 7 packages successful (zero TS errors).
+**Verification**: `pnpm turbo run build` — all 7 packages successful (zero TS errors). `pnpm --filter @ecom/ai test` — 18/18 tests pass.
 
 ---
 

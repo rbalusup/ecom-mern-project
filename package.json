@@ -27,6 +27,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md}\" --ignore-path .gitignore"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.57.0",

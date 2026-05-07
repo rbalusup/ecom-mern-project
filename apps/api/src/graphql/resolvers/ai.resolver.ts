@@ -27,7 +27,7 @@ export const aiResolvers: IResolvers<any, GraphQLContext> = {
       const [embedding] = await embedder.embed([query]);
 
       const { ProductModel } = await import('@ecom/db');
-      const pipeline = buildVectorSearchPipeline(embedding!, limit, 0.65);
+      const pipeline = buildVectorSearchPipeline(embedding!, limit, Math.max(limit * 10, 100));
       const results = await ProductModel.aggregate(pipeline).exec();
 
       await ctx.redis.setex(cacheKey, AI_CACHE_TTL, JSON.stringify(results));

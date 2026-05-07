@@ -15,16 +15,19 @@
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "clean": "rm -rf dist *.tsbuildinfo",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "@ecom/shared": "workspace:*",
-    "@ecom/db": "workspace:*",
     "@aws-sdk/client-bedrock-runtime": "^3.600.0",
+    "@ecom/db": "workspace:*",
+    "@ecom/shared": "workspace:*",
     "ioredis": "^5.3.2",
     "openai": "^4.77.0"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "vitest": "^2.1.9"
   }
 }
