@@ -1,18 +1,19 @@
-import type { IEmbedder } from './interface.js';
+import { Redis } from 'ioredis';
 
-// Stub factory — Phase 4 will wire in OpenAI / Bedrock implementations
+import { BedrockEmbedder } from './bedrock.embedder.js';
+import { CachedEmbedder } from './cache.js';
+import type { IEmbedder } from './interface.js';
+import { OpenAIEmbedder } from './openai.embedder.js';
+
 export class EmbedderFactory {
-  static create(): IEmbedder {
-    // Return a mock embedder in Phase 2; replaced with real impl in Phase 4
-    return {
-      async embed(texts: string[]): Promise<number[][]> {
-        // Generate random unit-vector embeddings for testing
-        return texts.map(() => {
-          const vec = Array.from({ length: 1536 }, () => Math.random() - 0.5);
-          const norm = Math.sqrt(vec.reduce((s, v) => s + v * v, 0));
-          return vec.map((v) => v / norm);
-        });
-      },
-    };
+  /**
+   * Creates an embedder based on AI_PROVIDER env var ('openai' | 'bedrock').
+   * Wraps with Redis cache when a Redis instance is provided.
+   */
+  static create(redis?: Redis): IEmbedder {
+    const provider = process.env['AI_PROVIDER'] ?? 'openai';
+    const base: IEmbedder = provider === 'bedrock' ? new BedrockEmbedder() : new OpenAIEmbedder();
+
+    return redis ? new CachedEmbedder(base, redis) : base;
   }
 }

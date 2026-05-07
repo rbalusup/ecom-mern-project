@@ -81,27 +81,30 @@
 
 ---
 
-## Phase 4 — AI/GenAI Layer 🔲 PENDING
+## Phase 4 — AI/GenAI Layer ✅ COMPLETE
 
 **Goal**: Vector search, RAG Q&A, personalized recommendations, AI descriptions.
 
 | Task | Status | Notes |
 |---|---|---|
-| packages/ai scaffold | 🔲 | |
-| IEmbedder interface + OpenAI embedder | 🔲 | text-embedding-3-large |
-| AWS Bedrock Titan embedder | 🔲 | Fallback |
-| EmbedderFactory (env-driven) | 🔲 | |
-| Embedding cache (Redis, 7-day TTL) | 🔲 | |
-| Atlas Vector Search wrapper | 🔲 | |
-| ILLMClient interface + OpenAI + Bedrock impls | 🔲 | |
-| product-qa.chain.ts (RAG: vector search → LLM) | 🔲 | |
-| recommendation.chain.ts (4 strategies) | 🔲 | |
-| description-gen.chain.ts | 🔲 | |
-| review-summary.chain.ts | 🔲 | |
-| Prompt templates | 🔲 | |
-| ai.resolver.ts (GraphQL) | 🔲 | |
-| Embedding backfill Lambda | 🔲 | Cursor-based, Redis checkpoint |
-| Atlas Vector Search index creation script | 🔲 | |
+| packages/ai scaffold | ✅ Done | |
+| IEmbedder interface + OpenAI embedder | ✅ Done | text-embedding-3-large, batch 100 |
+| AWS Bedrock Titan embedder | ✅ Done | Titan Text Embeddings V2, fallback |
+| EmbedderFactory (env-driven) | ✅ Done | AI_PROVIDER env var |
+| Embedding cache (Redis, 7-day TTL) | ✅ Done | CachedEmbedder, emb:{sha256(text)} |
+| ILLMClient interface + OpenAI + Bedrock impls | ✅ Done | GPT-4o + Claude 3 Haiku |
+| LLMFactory (env-driven) | ✅ Done | |
+| product-qa.chain.ts (RAG: vector search → LLM) | ✅ Done | Embeds question → $vectorSearch → LLM → AIQuery audit |
+| recommendation.chain.ts (4 strategies) | ✅ Done | SIMILAR, PERSONALIZED, FBT, TRENDING |
+| description-gen.chain.ts | ✅ Done | GPT-4o/Claude copywriter prompt |
+| review-summary.chain.ts | ✅ Done | LLM batch summarization (min 3 reviews) |
+| Prompt templates | ✅ Done | product-qa, description, review-summary |
+| ai.resolver.ts (GraphQL) | ✅ Done | Wired in Phase 2, uses real chains now |
+| Embedding backfill Lambda | ✅ Done | Wired in Phase 3, uses real EmbedderFactory |
+| Atlas Search + Vector Search index creation scripts | ✅ Done | scripts/atlas/ |
+| review-summary ingestion Lambda | ✅ Done | Replaced stub with real ReviewSummaryChain |
+
+**Verification**: `pnpm turbo run build` — all 7 packages successful (zero TS errors).
 
 ---
 

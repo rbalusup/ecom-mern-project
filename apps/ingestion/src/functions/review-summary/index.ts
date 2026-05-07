@@ -9,6 +9,7 @@
 import type { ScheduledHandler } from 'aws-lambda';
 
 import { connectDB, ProductModel, ReviewModel } from '@ecom/db';
+import { ReviewSummaryChain } from '@ecom/ai';
 import { createLogger, emitEMFMetric, initTracer } from '@ecom/observability';
 
 initTracer({ serviceName: 'ecom-review-summary' });
@@ -23,6 +24,8 @@ const BATCH_SIZE = 20;
 // Only re-summarize products with reviews updated in the last 24h
 const REVIEW_WINDOW_MS = 24 * 60 * 60 * 1000;
 
+const chain = new ReviewSummaryChain();
+
 export const handler: ScheduledHandler = async () => {
   const mongoUri = process.env['MONGODB_URI'];
   if (!mongoUri) throw new Error('MONGODB_URI not set');
@@ -30,7 +33,6 @@ export const handler: ScheduledHandler = async () => {
 
   const since = new Date(Date.now() - REVIEW_WINDOW_MS);
 
-  // Find product IDs that have new reviews in the window
   const productIds = await ReviewModel.distinct('productId', {
     createdAt: { $gte: since },
   }).exec();
@@ -55,13 +57,13 @@ export const handler: ScheduledHandler = async () => {
 
           if (reviews.length < 3) return; // Not enough reviews for a meaningful summary
 
-          const reviewText = reviews
-            .map((r) => `Rating: ${r.rating}/5\nTitle: ${r.title}\nReview: ${r.body ?? ''}`)
-            .join('\n---\n');
-
-          // Dynamically import to avoid loading LLM at cold start when not needed
-          // Phase 4 will flesh out the full LLM chain
-          const summary = await generateSummaryStub(reviewText, reviews.length);
+          const summary = await chain.summarize(
+            reviews.map((r) => ({
+              rating: r.rating,
+              title: r.title ?? undefined,
+              body: r.body ?? undefined,
+            })),
+          );
 
           await ProductModel.findByIdAndUpdate(productId, {
             $set: { reviewSummary: summary },
@@ -83,8 +85,3 @@ export const handler: ScheduledHandler = async () => {
 
   logger.info({ processed, failed }, 'Review summary Lambda finished');
 };
-
-// Phase 2 stub — Phase 4 wires the real LLM chain
-async function generateSummaryStub(reviewText: string, count: number): Promise<string> {
-  return `[Phase 4 stub] Summary of ${count} reviews. Sample: ${reviewText.slice(0, 100)}...`;
-}
