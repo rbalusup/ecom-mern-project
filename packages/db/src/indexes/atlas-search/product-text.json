@@ -1,0 +1,36 @@
+{
+  "name": "product-text-search",
+  "type": "search",
+  "definition": {
+    "mappings": {
+      "dynamic": false,
+      "fields": {
+        "name": {
+          "type": "string",
+          "analyzer": "lucene.english"
+        },
+        "description": {
+          "type": "string",
+          "analyzer": "lucene.english"
+        },
+        "aiDescription": {
+          "type": "string",
+          "analyzer": "lucene.english"
+        },
+        "tags": {
+          "type": "string",
+          "analyzer": "lucene.keyword"
+        },
+        "status": {
+          "type": "token"
+        },
+        "isDeleted": {
+          "type": "boolean"
+        },
+        "categoryId": {
+          "type": "objectId"
+        }
+      }
+    }
+  }
+}

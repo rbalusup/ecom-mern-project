@@ -1,0 +1,28 @@
+{
+  "name": "@ecom/db",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MongoDB models, repositories, and aggregation pipelines",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "check-types": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@ecom/shared": "workspace:*",
+    "mongoose": "^8.7.3"
+  },
+  "devDependencies": {
+    "@types/mongoose": "*",
+    "@types/node": "^22.19.17"
+  }
+}

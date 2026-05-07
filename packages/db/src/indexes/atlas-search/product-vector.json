@@ -1,0 +1,27 @@
+{
+  "name": "product-vector-search",
+  "type": "vectorSearch",
+  "definition": {
+    "fields": [
+      {
+        "type": "vector",
+        "path": "embedding",
+        "numDimensions": 1536,
+        "similarity": "cosine",
+        "quantization": "scalar"
+      },
+      {
+        "type": "filter",
+        "path": "status"
+      },
+      {
+        "type": "filter",
+        "path": "isDeleted"
+      },
+      {
+        "type": "filter",
+        "path": "categoryId"
+      }
+    ]
+  }
+}
