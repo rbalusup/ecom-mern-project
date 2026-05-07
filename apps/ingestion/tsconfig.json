@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "composite": true,
+    "types": ["node", "aws-lambda"],
+    "paths": {
+      "@ecom/shared": ["../../packages/shared/src/index.ts"],
+      "@ecom/db": ["../../packages/db/src/index.ts"],
+      "@ecom/observability": ["../../packages/observability/src/index.ts"],
+      "@ecom/ai": ["../../packages/ai/src/index.ts"]
+    }
+  },
+  "references": [
+    { "path": "../../packages/shared" },
+    { "path": "../../packages/db" },
+    { "path": "../../packages/observability" },
+    { "path": "../../packages/ai" }
+  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

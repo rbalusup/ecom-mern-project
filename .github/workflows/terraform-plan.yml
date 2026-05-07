@@ -1,0 +1,72 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'infra/terraform/**'
+
+concurrency:
+  group: terraform-plan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, staging, prod]
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.7.5'
+
+      - name: Terraform fmt check
+        run: terraform fmt -check -recursive
+        working-directory: infra/terraform
+
+      - name: Terraform Init (${{ matrix.environment }})
+        working-directory: infra/terraform/environments/${{ matrix.environment }}
+        run: terraform init -backend=false
+        env:
+          TF_VAR_mongodb_uri: "mongodb://placeholder"
+          TF_VAR_sns_ops_alert_email: "ops@example.com"
+
+      - name: Terraform Validate (${{ matrix.environment }})
+        working-directory: infra/terraform/environments/${{ matrix.environment }}
+        run: terraform validate
+
+      - name: Terraform Plan (${{ matrix.environment }})
+        id: plan
+        working-directory: infra/terraform/environments/${{ matrix.environment }}
+        run: terraform plan -no-color -out=plan.tfplan 2>&1 | tee plan.txt || true
+        env:
+          TF_VAR_mongodb_uri: "mongodb://placeholder"
+          TF_VAR_sns_ops_alert_email: "ops@example.com"
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Comment plan on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const plan = fs.existsSync('infra/terraform/environments/${{ matrix.environment }}/plan.txt')
+              ? fs.readFileSync('infra/terraform/environments/${{ matrix.environment }}/plan.txt', 'utf8')
+              : 'Plan not available';
+            const maxLen = 60000;
+            const truncated = plan.length > maxLen ? plan.slice(0, maxLen) + '\n...[truncated]' : plan;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Terraform Plan — \`${{ matrix.environment }}\`\n\`\`\`hcl\n${truncated}\n\`\`\``
+            });

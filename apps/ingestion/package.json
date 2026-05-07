@@ -1,0 +1,29 @@
+{
+  "name": "@ecom/ingestion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Data ingestion Lambda functions — S3 triggers, scheduled jobs",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.697.0",
+    "@aws-sdk/client-sqs": "^3.697.0",
+    "@ecom/ai": "workspace:*",
+    "@ecom/db": "workspace:*",
+    "@ecom/observability": "workspace:*",
+    "@ecom/shared": "workspace:*",
+    "csv-parse": "^5.5.6",
+    "ioredis": "^5.4.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^22.0.0",
+    "vitest": "^2.1.9"
+  }
+}
