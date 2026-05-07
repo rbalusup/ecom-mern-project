@@ -1,0 +1,25 @@
+type AIQueryResult {
+  answer: String!
+  contextProducts: [Product!]!
+  confidence: Float
+  traceId: String!
+  latencyMs: Int!
+}
+
+type RecommendationResult {
+  products: [Product!]!
+  reason: String!
+  strategy: RecommendationStrategy!
+}
+
+enum RecommendationStrategy {
+  SIMILAR_PRODUCTS
+  PERSONALIZED
+  TRENDING
+  FREQUENTLY_BOUGHT_TOGETHER
+}
+
+enum AIFeedback {
+  HELPFUL
+  NOT_HELPFUL
+}

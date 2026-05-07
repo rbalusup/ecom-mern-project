@@ -1,0 +1,18 @@
+type Coupon {
+  id: ID!
+  code: String!
+  type: CouponType!
+  value: Decimal!
+  minOrderValue: Decimal
+  maxDiscountAmount: Decimal
+  validFrom: DateTime!
+  validUntil: DateTime!
+  isActive: Boolean!
+  isValid: Boolean!
+}
+
+enum CouponType {
+  PERCENT
+  FIXED
+  FREE_SHIPPING
+}

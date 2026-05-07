@@ -1,0 +1,105 @@
+type Query {
+  # ─── Products ──────────────────────────────────────────────────────────────
+  product(id: ID!): Product
+  productBySku(sku: String!): Product
+  productBySlug(slug: String!): Product
+  products(
+    filter: ProductFilter
+    first: Int
+    after: String
+    sort: ProductSort
+  ): ProductConnection!
+  searchProducts(
+    query: String!
+    first: Int
+    after: String
+  ): ProductConnection! @rateLimit(max: 30, window: "1m")
+
+  # ─── Categories ────────────────────────────────────────────────────────────
+  categories(parentId: ID): [Category!]!
+  category(id: ID!): Category
+  categoryBySlug(slug: String!): Category
+
+  # ─── Orders ────────────────────────────────────────────────────────────────
+  order(id: ID!): Order @auth(roles: [CUSTOMER, ADMIN])
+  myOrders(first: Int, after: String, filter: OrderFilter): OrderConnection! @auth
+  orders(
+    filter: OrderFilter
+    first: Int
+    after: String
+  ): OrderConnection! @auth(roles: [ADMIN])
+
+  # ─── Users ─────────────────────────────────────────────────────────────────
+  me: User @auth
+  user(id: ID!): User @auth(roles: [ADMIN])
+
+  # ─── Cart ──────────────────────────────────────────────────────────────────
+  cart: Cart @auth
+
+  # ─── Reviews ───────────────────────────────────────────────────────────────
+  productReviews(
+    productId: ID!
+    first: Int
+    after: String
+  ): ReviewConnection!
+
+  # ─── AI / GenAI ────────────────────────────────────────────────────────────
+  askProduct(
+    productId: ID!
+    question: String!
+  ): AIQueryResult! @auth @rateLimit(max: 10, window: "1m")
+
+  recommendations(
+    strategy: RecommendationStrategy!
+    productId: ID
+    limit: Int
+  ): RecommendationResult! @auth
+
+  semanticSearch(
+    query: String!
+    limit: Int
+  ): [Product!]! @rateLimit(max: 20, window: "1m")
+}
+
+type Mutation {
+  # ─── Auth ──────────────────────────────────────────────────────────────────
+  refreshToken(token: String!): AuthPayload!
+
+  # ─── Products ──────────────────────────────────────────────────────────────
+  createProduct(input: CreateProductInput!): Product! @auth(roles: [ADMIN, VENDOR])
+  updateProduct(id: ID!, input: UpdateProductInput!): Product! @auth(roles: [ADMIN, VENDOR])
+  generateAIDescription(productId: ID!): Product! @auth(roles: [ADMIN]) @rateLimit(max: 5, window: "1m")
+
+  # ─── Cart ──────────────────────────────────────────────────────────────────
+  addToCart(productId: ID!, quantity: Int!): Cart! @auth
+  updateCartItem(productId: ID!, quantity: Int!): Cart! @auth
+  removeFromCart(productId: ID!): Cart! @auth
+  clearCart: Cart! @auth
+  applyCoupon(code: String!): Cart! @auth
+  removeCoupon: Cart! @auth
+
+  # ─── Orders ────────────────────────────────────────────────────────────────
+  createOrder(input: CreateOrderInput!): Order! @auth
+  cancelOrder(id: ID!): Order! @auth
+  updateOrderStatus(
+    id: ID!
+    input: UpdateOrderStatusInput!
+  ): Order! @auth(roles: [ADMIN])
+
+  # ─── Reviews ───────────────────────────────────────────────────────────────
+  createReview(input: CreateReviewInput!): Review! @auth
+  markReviewHelpful(id: ID!): Review! @auth
+
+  # ─── Profile ───────────────────────────────────────────────────────────────
+  updateProfile(input: UpdateProfileInput!): User! @auth
+  addAddress(input: AddressInput!): User! @auth
+
+  # ─── AI ────────────────────────────────────────────────────────────────────
+  submitAIFeedback(queryId: ID!, feedback: AIFeedback!): Boolean! @auth
+}
+
+type Subscription {
+  orderStatusChanged(orderId: ID!): Order! @auth
+  inventoryUpdated(productId: ID!): Inventory!
+  newReview(productId: ID!): Review!
+}

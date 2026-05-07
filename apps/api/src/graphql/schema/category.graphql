@@ -1,0 +1,14 @@
+type Category @key(fields: "id") {
+  id: ID!
+  name: String!
+  slug: String!
+  description: String
+  imageUrl: String
+  parent: Category
+  children: [Category!]!
+  level: Int!
+  path: String!
+  isActive: Boolean!
+  productCount: Int!
+  createdAt: DateTime!
+}

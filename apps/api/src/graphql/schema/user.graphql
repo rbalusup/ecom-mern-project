@@ -1,0 +1,65 @@
+type User @key(fields: "id") {
+  id: ID!
+  email: String!
+  role: Role!
+  profile: UserProfile!
+  isActive: Boolean!
+  lastLoginAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type UserProfile {
+  firstName: String!
+  lastName: String!
+  fullName: String!
+  avatarUrl: String
+  phone: String
+  addresses: [Address!]!
+  preferences: [String!]!
+}
+
+type Address {
+  line1: String!
+  line2: String
+  city: String!
+  state: String!
+  postalCode: String!
+  country: String!
+  isDefault: Boolean
+}
+
+type AuthPayload {
+  accessToken: String!
+  refreshToken: String!
+  expiresIn: Int!
+  user: User!
+}
+
+type UserConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type UserEdge {
+  node: User!
+  cursor: String!
+}
+
+input AddressInput {
+  line1: String!
+  line2: String
+  city: String!
+  state: String!
+  postalCode: String!
+  country: String!
+  isDefault: Boolean
+}
+
+input UpdateProfileInput {
+  firstName: String
+  lastName: String
+  phone: String
+  preferences: [String!]
+}

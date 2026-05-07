@@ -1,0 +1,30 @@
+type Review {
+  id: ID!
+  product: Product!
+  customer: User!
+  rating: Int!
+  title: String!
+  body: String!
+  verifiedPurchase: Boolean!
+  helpful: Int!
+  createdAt: DateTime!
+}
+
+type ReviewConnection {
+  edges: [ReviewEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+  averageRating: Float!
+}
+
+type ReviewEdge {
+  node: Review!
+  cursor: String!
+}
+
+input CreateReviewInput {
+  productId: ID!
+  rating: Int!
+  title: String!
+  body: String!
+}

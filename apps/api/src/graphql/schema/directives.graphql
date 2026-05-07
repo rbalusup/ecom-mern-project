@@ -1,0 +1,16 @@
+directive @auth(roles: [Role!] = []) on FIELD_DEFINITION | OBJECT
+
+directive @rateLimit(
+  max: Int!
+  window: String!
+) on FIELD_DEFINITION
+
+scalar DateTime
+scalar Decimal
+scalar JSON
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  VENDOR
+}

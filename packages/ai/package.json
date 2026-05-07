@@ -1,0 +1,27 @@
+{
+  "name": "@ecom/ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI/GenAI layer — embeddings, vector search, RAG chains, LLM clients",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ecom/shared": "workspace:*",
+    "@ecom/db": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0"
+  }
+}

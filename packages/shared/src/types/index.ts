@@ -20,10 +20,10 @@ export interface IConnection<T> {
 }
 
 export interface IPaginationArgs {
-  first?: number;
-  after?: string;
-  last?: number;
-  before?: string;
+  first?: number | undefined;
+  after?: string | undefined;
+  last?: number | undefined;
+  before?: string | undefined;
 }
 
 // ─── API Context ─────────────────────────────────────────────────────────────

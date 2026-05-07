@@ -1,0 +1,98 @@
+type Order @key(fields: "id") {
+  id: ID!
+  orderNumber: String!
+  customer: User!
+  status: OrderStatus!
+  items: [OrderItem!]!
+  pricing: OrderPricing!
+  coupon: Coupon
+  shippingAddress: Address!
+  paymentMethod: PaymentMethod!
+  trackingNumber: String
+  notes: String
+  events: [OrderEvent!]!
+  canCancel: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OrderItem {
+  product: Product!
+  sku: String!
+  name: String!
+  quantity: Int!
+  unitPrice: Decimal!
+  totalPrice: Decimal!
+  imageUrl: String
+}
+
+type OrderPricing {
+  subtotal: Decimal!
+  tax: Decimal!
+  shipping: Decimal!
+  discount: Decimal!
+  total: Decimal!
+  currency: String!
+}
+
+type PaymentMethod {
+  type: String!
+  last4: String
+  provider: String!
+}
+
+type OrderEvent {
+  id: ID!
+  eventType: String!
+  fromStatus: OrderStatus!
+  toStatus: OrderStatus!
+  timestamp: DateTime!
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAYMENT_PROCESSING
+  PAYMENT_FAILED
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  RETURN_REQUESTED
+  RETURNED
+  CANCELLED
+}
+
+type OrderConnection {
+  edges: [OrderEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type OrderEdge {
+  node: Order!
+  cursor: String!
+}
+
+input CreateOrderInput {
+  items: [OrderItemInput!]!
+  shippingAddress: AddressInput!
+  couponCode: String
+  notes: String
+}
+
+input OrderItemInput {
+  productId: ID!
+  quantity: Int!
+}
+
+input OrderFilter {
+  status: OrderStatus
+  fromDate: DateTime
+  toDate: DateTime
+  minTotal: Decimal
+}
+
+input UpdateOrderStatusInput {
+  status: OrderStatus!
+  notes: String
+}

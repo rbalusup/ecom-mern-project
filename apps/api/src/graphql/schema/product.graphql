@@ -1,0 +1,129 @@
+type Product @key(fields: "id") {
+  id: ID!
+  sku: String!
+  slug: String!
+  name: String!
+  description: String!
+  aiDescription: String
+  category: Category!
+  vendor: User!
+  price: Price!
+  inventory: Inventory!
+  images: [ProductImage!]!
+  tags: [String!]!
+  attributes: JSON!
+  rating: Rating!
+  reviewSummary: String
+  reviews(first: Int, after: String): ReviewConnection!
+  status: ProductStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Price {
+  base: Decimal!
+  currency: String!
+  discountedPrice: Decimal
+  effectivePrice: Decimal!
+}
+
+type Inventory {
+  quantity: Int!
+  reservedQuantity: Int!
+  availableQuantity: Int!
+  warehouseId: String!
+  lowStockThreshold: Int!
+  isLowStock: Boolean!
+  isInStock: Boolean!
+}
+
+type ProductImage {
+  url: String!
+  alt: String!
+  isPrimary: Boolean!
+}
+
+type Rating {
+  average: Float!
+  count: Int!
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+type ProductConnection {
+  edges: [ProductEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type ProductEdge {
+  node: Product!
+  cursor: String!
+}
+
+input ProductFilter {
+  categoryId: ID
+  status: ProductStatus
+  minPrice: Decimal
+  maxPrice: Decimal
+  tags: [String!]
+  vendorId: ID
+  inStock: Boolean
+  search: String
+}
+
+input ProductSort {
+  field: ProductSortField!
+  order: SortOrder!
+}
+
+enum ProductSortField {
+  PRICE
+  RATING
+  CREATED_AT
+  NAME
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+input CreateProductInput {
+  name: String!
+  description: String!
+  categoryId: ID!
+  sku: String!
+  price: PriceInput!
+  inventory: InventoryInput!
+  tags: [String!]
+  attributes: JSON
+  status: ProductStatus
+}
+
+input UpdateProductInput {
+  name: String
+  description: String
+  categoryId: ID
+  price: PriceInput
+  inventory: InventoryInput
+  tags: [String!]
+  attributes: JSON
+  status: ProductStatus
+}
+
+input PriceInput {
+  base: Decimal!
+  currency: String!
+  discountedPrice: Decimal
+}
+
+input InventoryInput {
+  quantity: Int!
+  warehouseId: String!
+  lowStockThreshold: Int
+}

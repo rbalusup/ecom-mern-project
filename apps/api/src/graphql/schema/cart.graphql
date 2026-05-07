@@ -1,0 +1,19 @@
+type Cart {
+  id: ID!
+  items: [CartItem!]!
+  coupon: Coupon
+  subtotal: Decimal!
+  itemCount: Int!
+  expiresAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CartItem {
+  product: Product!
+  sku: String!
+  name: String!
+  quantity: Int!
+  unitPrice: Decimal!
+  totalPrice: Decimal!
+  imageUrl: String
+}

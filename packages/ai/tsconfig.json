@@ -5,7 +5,15 @@
     "rootDir": "./src",
     "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "composite": true,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@ecom/shared": ["../shared/src/index.ts"],
+      "@ecom/db": ["../db/src/index.ts"]
+    }
   },
+  "references": [
+    { "path": "../shared" },
+    { "path": "../db" }
+  ],
   "include": ["src/**/*"]
 }
